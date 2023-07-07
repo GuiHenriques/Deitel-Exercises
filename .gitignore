@@ -1,6 +1,9 @@
 # My test files
 teste.c
 
+# Build task files
+.vscode
+
 # Prerequisites
 *.d
 
