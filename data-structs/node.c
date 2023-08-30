@@ -1,46 +1,62 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-// void insert()
-
-typedef struct node
-{
+typedef struct node {
     int value;
     struct node *next;
 } node;
 
+node* create(int);
+node* insert(node* n, int);
+bool find(node* n, int);
 
-int main(int argc, char *argv[])
+
+int main(void)
 {
+    node* list = create(3);
+    list = insert(list, 6);
+    list = insert(list, 9);
+    printf("Find: %d\n", find(list, 7));
+}
 
-    node *list = NULL;
+node* create(int val)
+{
+    node *n = malloc(sizeof(node));
+    if (n == NULL)
+        return NULL;
 
-    for (int i = 1; i < argc; i++)
-    {
-        printf("Iteration %i:\n", i);
-        node *n = malloc(sizeof(node));
-        n->value = atoi(argv[i]);
-        // n->next = NULL;
+    n->value = val;
+    n->next = NULL;
 
-        n->next = list;
-        printf("%p\n", (void *)list);
-        list = n;
-    }
-    
-    // print list
-    node *ptr = list;
+    return n;
+
+}
+
+node* insert(node *start, int val)
+{
+    node *n = malloc(sizeof(node));
+    if (n == NULL)
+        return NULL;
+
+    n->value = val;
+    n->next = NULL;
+
+    n->next = start;
+    start = n;
+    return start;
+}
+
+bool find(node *start, int val)
+{
+    node *ptr = start;
     while (ptr != NULL)
     {
-        printf("%i\n", ptr->value);
+        printf("Valor: %i\n", ptr->value);
+        if (ptr->value == val)
+            return true;
         ptr = ptr->next;
     }
-
-    // free nodes
-    ptr = list;
-    while (ptr != NULL)
-    {
-        node *next = ptr->next;
-        free(ptr);
-        ptr = next;
-    }
+    
+    return false;
 }
