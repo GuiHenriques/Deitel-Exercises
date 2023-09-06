@@ -20,29 +20,35 @@ void insert_before(int, int);
 int access_first(void);
 int access_last(void);
 int access_position(int);
+// access_value (variavel fantasma)
 
 void remove_first(void);
 void remove_last(void);
 void remove_postion(int);
 void remove_value(int);
 
+// free_list();
 
 void print_list(void);
 
 int main(void)
 {
     create(2);
-    insert_last(3);
     insert_start(1);
-    
-    printf("%i\n", access_first());
-    printf("%i\n", access_position(2));
-    printf("%i\n", access_last());
-    
+    insert_last(3);
     print_list();
+
+    /*printf("%i\n", access_first());
+    printf("%i\n", access_position(2));
+    printf("%i\n", access_last());*/
+
+    remove_postion(4);
+    print_list();
+
     return 0;
 }
 
+// Create new list
 void create(int val)
 {
     node *n = malloc(sizeof(node));
@@ -55,6 +61,7 @@ void create(int val)
     last = n;
 }
 
+// Insertions
 void insert_start(int val)
 {
     node *n = malloc(sizeof(node));
@@ -159,6 +166,7 @@ void insert_before(int pos, int val)
     ptr->next = n;
 }
 
+// Access
 int access_first(void)
 {
     return start->value;
@@ -179,21 +187,56 @@ int access_position(int val)
     return ptr->value;
 }
 
-
+// Remotions
 void remove_first(void)
 {
-
-    return;
+    node *tmp = start->next;
+    free(start);
+    start = tmp;
 }
 
 void remove_last(void)
 {
-
-    return;
+    node *ptr = start;
+    while (ptr->next != last)
+        ptr = ptr->next;
+    
+    free(last);
+    ptr->next = NULL;
+    last = ptr;
 }
 
-void remove_postion(int)
+void remove_postion(int pos)
 {
+    if (pos == 1) 
+    {
+        remove_first();
+        return;
+    }
+
+    node *ptr = start;
+
+    for (int i = 1; i < pos - 1; i++)
+    {
+        if (ptr->next == NULL)
+        {
+            printf("->next == null");
+            return;
+        }
+
+        ptr = ptr->next;
+    }
+    
+    if (ptr->next->next == NULL)
+    {
+        remove_last();
+        return;
+    }
+
+    ptr->next = ptr->next->next;
+    ptr = ptr->next;
+    free(ptr);
+    
 
     return;
 }
@@ -205,28 +248,15 @@ void remove_value(int)
 }
 
 
-bool find(int val)
-{
-    node *ptr = start;
-    while (ptr != NULL)
-    {
-        printf("Valor: %i\n", ptr->value);
-        if (ptr->value == val)
-            return true;
-        ptr = ptr->next;
-    }
-    
-    return false;
-}
-
 void print_list(void)
 {
     node *ptr = start;
     while (ptr != NULL)
     {
         node *next = ptr->next;
-        printf("%i\n", ptr->value);
-        free(ptr);
+        printf("%i ", ptr->value);
+        // free(ptr);
         ptr = next;
     }
+    printf("\n");
 }
