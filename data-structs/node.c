@@ -17,17 +17,27 @@ void insert_position(int, int);
 void insert_after(int, int);
 void insert_before(int, int);
 
-bool find(int);
+int access_first(void);
+int access_last(void);
+int access_position(int);
+
+void remove_first(void);
+void remove_last(void);
+void remove_postion(int);
+void remove_value(int);
+
+
 void print_list(void);
 
 int main(void)
 {
     create(2);
+    insert_last(3);
     insert_start(1);
-    insert_last(6);
-    insert_position(2, 3);
-    insert_after(3, 4);
-    insert_before(6, 5);
+    
+    printf("%i\n", access_first());
+    printf("%i\n", access_position(2));
+    printf("%i\n", access_last());
     
     print_list();
     return 0;
@@ -148,6 +158,52 @@ void insert_before(int pos, int val)
     n->next = ptr->next;
     ptr->next = n;
 }
+
+int access_first(void)
+{
+    return start->value;
+}
+
+int access_last(void)
+{
+    return last->value;
+}
+
+int access_position(int val)
+{
+    node *ptr = start;
+    
+    for (int i = 1; i < val; i++)
+        ptr = ptr->next;
+    
+    return ptr->value;
+}
+
+
+void remove_first(void)
+{
+
+    return;
+}
+
+void remove_last(void)
+{
+
+    return;
+}
+
+void remove_postion(int)
+{
+
+    return;
+}
+
+void remove_value(int)
+{
+
+    return;
+}
+
 
 bool find(int val)
 {
