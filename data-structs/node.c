@@ -17,34 +17,27 @@ void insert_position(int, int);
 void insert_after(int, int);
 void insert_before(int, int);
 
-int access_first(void);
-int access_last(void);
+int access_first();
+int access_last();
 int access_position(int);
-// access_value (variavel fantasma)
+int find_value(int); // busca
 
-void remove_first(void);
-void remove_last(void);
+void remove_first();
+void remove_last();
 void remove_postion(int);
 void remove_value(int);
 
-// free_list();
-
-void print_list(void);
+void free_list();
+int check_empty();
+void print_list();
 
 int main(void)
-{
+{   
     create(2);
-    insert_start(1);
     insert_last(3);
-    print_list();
-
-    /*printf("%i\n", access_first());
-    printf("%i\n", access_position(2));
-    printf("%i\n", access_last());*/
-
-    remove_postion(4);
-    print_list();
-
+    
+    free_list();
+    
     return 0;
 }
 
@@ -167,36 +160,75 @@ void insert_before(int pos, int val)
 }
 
 // Access
-int access_first(void)
+int access_first()
 {
+    if (check_empty())
+        return 0;
     return start->value;
 }
 
-int access_last(void)
+int access_last()
 {
+    if (check_empty())
+        return 0;
+
     return last->value;
 }
 
-int access_position(int val)
+int access_position(int pos)
 {
     node *ptr = start;
     
-    for (int i = 1; i < val; i++)
+    for (int i = 0; i < pos; i++)
+    {
+        if (ptr->next == NULL)
+        {
+            printf("index error\n");
+            return 0;
+        }
         ptr = ptr->next;
+    }
     
     return ptr->value;
 }
 
-// Remotions
-void remove_first(void)
+int find_value(int val) // busca
 {
-    node *tmp = start->next;
-    free(start);
-    start = tmp;
+    insert_last(val);
+    
+    node *ptr = start;
+
+    while (ptr->value != val)
+    {
+        ptr = ptr->next;
+    }
+    
+    if (ptr->next == NULL)
+    {
+        printf("not found\n");
+        return 0;
+    }
+
+    printf("found\n");
+    return 1;
 }
 
-void remove_last(void)
+// Remotions
+void remove_first()
 {
+    if (check_empty())
+        return;
+
+    node *tmp = start;
+    start = start->next;
+    free(tmp);
+}
+
+void remove_last()
+{
+    if (check_empty())
+        return;
+
     node *ptr = start;
     while (ptr->next != last)
         ptr = ptr->next;
@@ -208,47 +240,72 @@ void remove_last(void)
 
 void remove_postion(int pos)
 {
-    if (pos == 1) 
+    if (check_empty())
+        return;
+
+    if (pos == 0) 
     {
         remove_first();
         return;
     }
 
+    int cont = 0;
     node *ptr = start;
+    node *prev = NULL;
 
-    for (int i = 1; i < pos - 1; i++)
+    while (cont < pos && ptr != NULL)
     {
-        if (ptr->next == NULL)
-        {
-            printf("->next == null");
-            return;
-        }
-
+        prev = ptr;
         ptr = ptr->next;
+        cont++;
+    }
+
+    if (ptr == NULL)
+    {
+        printf("index error\n");
+        return;
     }
     
-    if (ptr->next->next == NULL)
+    prev->next = ptr->next;
+    free(ptr);
+}
+
+void remove_value(int val)
+{
+    if (check_empty())
+        return;
+
+    node *ptr = start;
+    node *prev = NULL;
+
+    while (ptr->value != val && ptr->next != NULL)
     {
-        remove_last();
+        prev = ptr;
+        ptr = ptr->next;
+    }
+
+    if (ptr == NULL)
+    {
+        printf("Not found\n");
         return;
     }
 
-    ptr->next = ptr->next->next;
-    ptr = ptr->next;
+    prev->next = ptr->next;
     free(ptr);
-    
-
-    return;
 }
 
-void remove_value(int)
+int check_empty()
 {
-
-    return;
+    if (start == NULL)
+    {
+        printf("empty\n");
+        return 1;
+    }
+    else
+        return 0;
 }
 
-
-void print_list(void)
+void print_list()
 {
     node *ptr = start;
     while (ptr != NULL)
@@ -259,4 +316,17 @@ void print_list(void)
         ptr = next;
     }
     printf("\n");
+}
+
+void free_list()
+{
+    node *ptr = start;
+    node *tmp;
+
+    while (ptr != NULL)
+    {
+        tmp = ptr;
+        ptr = ptr->next;
+        free(tmp);
+    }
 }
